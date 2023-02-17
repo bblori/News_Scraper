@@ -10,19 +10,19 @@ soup = BeautifulSoup(content, 'lxml')
 # print(soup.prettify())
 cikkek = soup.find_all('h2', attrs={'class':'cikkcim'})
 
-print(cikkek)
-print(type(cikkek))
+# Kereset kulcsszavak
+keywordsList = ["Otp"]
+count = 0
+maxArticles = 5
+
 
 for link in cikkek:
-#print(link.get_text())
-#print(link.get('href')) """
-    print(link.find('a').get_text())
-    print("-------------------")
+    if count <= maxArticles:
+        cikkCim = link.find('a').get_text()
+        cikkLink = link.find('a').get('href')
+        print("-------------------")
+    else:
+        break
+    count = count + 1
 
-# for link in soup.find_all('a'):
-#     print(link.get('href'))
-
-# for i in box:
-#     print(i.find('a').get_text())
-#print(box)
 
