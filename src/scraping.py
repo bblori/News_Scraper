@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 websites = ["https://index.hu", "https://portfolio.hu"]
 
 # Keywords
-keywordsList = ["Deviza", "Forint", "forint", "Tőzsd", "Otp", "Richter"]
+keywordsList = ["Forint", "forint", "Tőzsd", "Otp", "Richter"]
 
 # Maximum number of displayed articles
 maxArticles = 10
@@ -19,35 +19,36 @@ def main(websites, keywordsList, maxArticles):
         for h in tags:
             articles = soup.find_all(h)
             Checker(website, articles, keywordsList, maxArticles)
-    
-
-""" def index(website, keywordsList, maxArticles):
-    result = requests.get(website)
-    content = result.text
-    soup = BeautifulSoup(content, 'lxml')
-    cikkek = soup.find_all('h2', attrs={'class':'cikkcim'})
-    otpChecker(cikkek, keywordsList, maxArticles) """
-
+    print("Vége a " + website + "-nak.")
 
 def Checker(website, articles, keywordsList, maxArticles):
     count = 0
     for link in articles:
         if count <= maxArticles:
+            # Searched keyword like: Otp in article title
             for key in keywordsList:
                 if key in link.find('a').get_text(): 
-                # if any(key.startswith(key) for key in link.find('a').get_text()):
                     articleTitle = link.find('a').get_text()
                     articleLink = link.find('a').get('href')
-                    print("-------------------")
-                    print(articleTitle)
-                    print(articleLink)
-                    print(website)
-                    print("-------------------")
+                    print("-----------\n" + articleTitle + "\n" + articleLink + "---------\n" + website)
         count = count + 1
+    origoGetLinks(keywordsList, maxArticles)
 
-# for test_word in search_words:
-#	if any(word.startswith(test_word) for word in forbidden_list):
-#    	print(test_word)
+def origoGetLinks(keywordsList, maxArticles):
+        website = "https://origo.hu"
+        result = requests.get(website)
+        content = result.text
+        soup = BeautifulSoup(content, 'lxml')
+        articles = soup.find_all('div', attrs={'ait-top'})
+        for article in articles:
+            articleTitle = article.get_text()
+            articleLink = article.find('a').get('href')
+            compare(articleTitle, articleLink, keywordsList)
 
+def compare(articleTitle, articleLink, keywordsList):
+    for key in keywordsList:
+        if key in articleTitle:
+            print(articleTitle +" "+ articleLink)
 
 main(websites, keywordsList, maxArticles)
+#origoGetLinks(keywordsList, maxArticles)
